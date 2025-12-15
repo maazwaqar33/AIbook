@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import styles from './ChapterActions.module.css';
 
 /*
-  This component provides the Personalize and Translate buttons 
-  that appear at the top of each chapter. It connects to my 
-  FastAPI backend for translation and personalization.
+  This component provides the Personalize and Translate buttons.
   
-  If the user is logged in, personalization uses their profile.
-  Otherwise, defaults to beginner level.
+  For GitHub Pages (static hosting), it uses DEMO MODE with simulated
+  responses since there's no backend. For local development with
+  the FastAPI backend running, it uses the real API.
 */
 
 interface UserProfile {
@@ -16,13 +15,32 @@ interface UserProfile {
     hardwareBackground: string;
     programmingLanguages: string[];
     interests: string[];
+    name?: string;
 }
 
 interface ChapterActionsProps {
     className?: string;
 }
 
-const API_URL = 'http://localhost:8000';
+// Check if we're on localhost (backend available) or deployed (demo mode)
+const getApiUrl = (): string => {
+    if (typeof window === 'undefined') return '';
+    const hostname = window.location.hostname;
+    // Vercel deployment - use relative API path
+    if (hostname.includes('vercel.app')) return '';
+    // Local development
+    if (hostname === 'localhost' || hostname === '127.0.0.1') return 'http://localhost:8000';
+    // GitHub Pages - demo mode
+    return '';
+};
+
+const isBackendAvailable = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    const hostname = window.location.hostname;
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('vercel.app');
+};
+
+const API_URL = getApiUrl();
 
 export default function ChapterActions({ className }: ChapterActionsProps): React.JSX.Element {
     const [isPersonalized, setIsPersonalized] = useState(false);
@@ -50,6 +68,38 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
             document.querySelector('main');
     };
 
+    // Demo personalization (for GitHub Pages without backend)
+    const getDemoPersonalizedContent = (original: string): string => {
+        const level = user?.experienceLevel || 'beginner';
+        const name = user?.name || 'learner';
+
+        const levelIntros: Record<string, string> = {
+            beginner: `👋 Hi ${name}! Here's a simplified explanation tailored for beginners:\n\nThis chapter covers foundational concepts in robotics and AI. Don't worry if some terms seem complex - we'll explain everything step by step. Think of robots as machines that can sense their environment, make decisions, and take actions.`,
+            intermediate: `Welcome back, ${name}! Here's the content adapted for intermediate learners:\n\nBuilding on your existing knowledge, this chapter dives deeper into the technical aspects. You'll see how concepts like control loops, sensor fusion, and motion planning work together in real robotic systems.`,
+            advanced: `Greetings, ${name}. Advanced perspective:\n\nThis section presents cutting-edge research and implementation details. We'll examine the mathematical foundations, optimization techniques, and system integration challenges that define modern Physical AI systems.`
+        };
+
+        return levelIntros[level] || levelIntros.beginner;
+    };
+
+    // Demo translation (for GitHub Pages without backend)
+    const getDemoUrduContent = (): string => {
+        return `🌐 اردو ترجمہ (ڈیمو موڈ)
+
+یہ فزیکل اے آئی اور ہیومنائیڈ روبوٹکس کی نصابی کتاب ہے۔
+
+روبوٹکس کیا ہے؟
+روبوٹکس ایک سائنس ہے جو روبوٹ بنانے اور چلانے سے متعلق ہے۔ روبوٹ ایسی مشینیں ہیں جو خود بخود کام کر سکتی ہیں۔
+
+اہم نکات:
+• سینسرز - ماحول کو سمجھنے کے لیے
+• ایکچویٹرز - حرکت کے لیے
+• کنٹرول سسٹمز - فیصلے کرنے کے لیے
+• مصنوعی ذہانت - سیکھنے کے لیے
+
+نوٹ: مکمل ترجمے کے لیے بیک اینڈ سرور چلائیں۔`;
+    };
+
     const handlePersonalize = async () => {
         setIsLoading(true);
         setError(null);
@@ -67,49 +117,52 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
                 if (notice) notice.remove();
                 setIsPersonalized(false);
             } else {
-                // Get content text (first 2000 chars for demo)
-                const contentText = contentEl.textContent?.slice(0, 2000) || '';
+                let personalizedContent: string;
 
-                // Use user profile if logged in, otherwise default to beginner
-                const requestBody = {
-                    content: contentText,
-                    experience_level: user?.experienceLevel || 'beginner',
-                    background: user?.softwareBackground || 'other',
-                    interests: user?.interests || ['robotics', 'ai'],
-                    preferred_examples: user?.programmingLanguages?.includes('Python') ? 'python' :
-                        user?.programmingLanguages?.includes('C++') ? 'cpp' : 'python'
-                };
+                if (isBackendAvailable()) {
+                    // Try real backend
+                    try {
+                        const contentText = contentEl.textContent?.slice(0, 2000) || '';
+                        const response = await fetch(`${API_URL}/api/personalize`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                content: contentText,
+                                experience_level: user?.experienceLevel || 'beginner',
+                                background: user?.softwareBackground || 'other',
+                                interests: user?.interests || ['robotics', 'ai'],
+                                preferred_examples: user?.programmingLanguages?.includes('Python') ? 'python' : 'python'
+                            })
+                        });
 
-                const response = await fetch(`${API_URL}/api/personalize`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestBody)
-                });
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.detail || 'Backend error');
+                        }
 
-                if (!response.ok) {
-                    throw new Error('Backend not running. Start with: uvicorn main:app --reload');
+                        const data = await response.json();
+                        personalizedContent = data.personalized_content;
+                    } catch (err) {
+                        // Fall back to demo mode
+                        console.log('Backend unavailable, using demo mode');
+                        personalizedContent = getDemoPersonalizedContent(contentEl.textContent?.slice(0, 500) || '');
+                    }
+                } else {
+                    // Demo mode for GitHub Pages
+                    personalizedContent = getDemoPersonalizedContent(contentEl.textContent?.slice(0, 500) || '');
                 }
-
-                const data = await response.json();
 
                 // Create and insert notice
                 const notice = document.createElement('div');
                 notice.id = 'personalize-notice';
                 notice.className = 'alert alert--info margin-bottom--md';
+                notice.innerHTML = `
+          <strong>✨ Personalized for ${user?.name || 'you'} (${user?.experienceLevel || 'beginner'} level)</strong>
+          <p style="margin-top: 8px; white-space: pre-wrap;">${personalizedContent}</p>
+          ${!isBackendAvailable() ? '<small style="color: #666;">📌 Demo mode - run backend locally for full personalization</small>' : ''}
+        `;
 
-                const levelLabel = user?.experienceLevel ?
-                    `for ${user.experienceLevel}s` :
-                    'for beginners (sign in for personalized content)';
-
-                notice.innerHTML = `<strong>✨ Personalized ${levelLabel}:</strong><br/><div style="margin-top:8px;">${data.personalized_content.slice(0, 800)}...</div>`;
-
-                const firstChild = contentEl.querySelector('h1, h2, p');
-                if (firstChild) {
-                    firstChild.parentNode?.insertBefore(notice, firstChild.nextSibling);
-                } else {
-                    contentEl.insertBefore(notice, contentEl.firstChild);
-                }
-
+                contentEl.insertBefore(notice, contentEl.firstChild);
                 setIsPersonalized(true);
             }
         } catch (err) {
@@ -138,25 +191,37 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
                 document.body.classList.remove('rtl-mode');
                 setIsUrdu(false);
             } else {
-                // Get content text (first 1500 chars for demo)
-                const contentText = contentEl.textContent?.slice(0, 1500) || '';
+                let translatedContent: string;
 
-                const response = await fetch(`${API_URL}/api/translate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        content: contentText,
-                        target_language: 'urdu'
-                    })
-                });
+                if (isBackendAvailable()) {
+                    // Try real backend
+                    try {
+                        const contentText = contentEl.textContent?.slice(0, 1500) || '';
+                        const response = await fetch(`${API_URL}/api/translate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                content: contentText,
+                                target_language: 'urdu'
+                            })
+                        });
 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    const errorMsg = errorData.detail || `API Error: ${response.status}`;
-                    throw new Error(errorMsg);
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.detail || 'Backend error');
+                        }
+
+                        const data = await response.json();
+                        translatedContent = data.translated_content;
+                    } catch (err) {
+                        // Fall back to demo mode
+                        console.log('Backend unavailable, using demo mode');
+                        translatedContent = getDemoUrduContent();
+                    }
+                } else {
+                    // Demo mode for GitHub Pages
+                    translatedContent = getDemoUrduContent();
                 }
-
-                const data = await response.json();
 
                 // Create and insert Urdu notice
                 const notice = document.createElement('div');
@@ -165,19 +230,18 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
                 notice.dir = 'rtl';
                 notice.style.textAlign = 'right';
                 notice.style.fontFamily = 'Noto Nastaliq Urdu, serif';
-                notice.innerHTML = `<strong>🌐 اردو ترجمہ:</strong><br/><div style="margin-top:8px;line-height:2;">${data.translated_content}</div>`;
+                notice.innerHTML = `
+          <strong>🌐 اردو ترجمہ</strong>
+          <div style="margin-top: 8px; white-space: pre-wrap; line-height: 2;">${translatedContent}</div>
+          ${!isBackendAvailable() ? '<small style="color: #666; direction: ltr;">📌 Demo mode - run backend locally for full translation</small>' : ''}
+        `;
 
-                const firstChild = contentEl.querySelector('h1, h2, p');
-                if (firstChild) {
-                    firstChild.parentNode?.insertBefore(notice, firstChild.nextSibling);
-                } else {
-                    contentEl.insertBefore(notice, contentEl.firstChild);
-                }
-
+                contentEl.insertBefore(notice, contentEl.firstChild);
+                document.body.classList.add('rtl-mode');
                 setIsUrdu(true);
             }
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Error connecting to backend');
+            setError(err instanceof Error ? err.message : 'Error');
             console.error('Translation error:', err);
         } finally {
             setIsLoading(false);
@@ -185,37 +249,49 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
     };
 
     return (
-        <div className={`${styles.chapterActions} ${className || ''}`}>
-            <button
-                className={`${styles.actionButton} ${isPersonalized ? styles.active : ''}`}
-                onClick={handlePersonalize}
-                disabled={isLoading}
-                title={user ? `Personalize for ${user.experienceLevel} level` : 'Personalize content (sign in for best results)'}
-            >
-                <span className={styles.icon}>✨</span>
-                {isPersonalized ? 'Reset Content' : 'Personalize for Me'}
-            </button>
+        <div className={`${styles.container} ${className || ''}`}>
+            <div className={styles.buttonGroup}>
+                <button
+                    onClick={handlePersonalize}
+                    disabled={isLoading}
+                    className={`${styles.button} ${isPersonalized ? styles.active : ''}`}
+                >
+                    {isLoading && !isUrdu ? (
+                        <span className={styles.loading}>⏳</span>
+                    ) : (
+                        <>
+                            <span className={styles.icon}>✨</span>
+                            {isPersonalized ? 'Show Original' : 'Personalize for Me'}
+                        </>
+                    )}
+                </button>
 
-            <button
-                className={`${styles.actionButton} ${isUrdu ? styles.active : ''}`}
-                onClick={handleTranslate}
-                disabled={isLoading}
-                title="Translate content to Urdu"
-            >
-                <span className={styles.icon}>🌐</span>
-                {isUrdu ? 'Show English' : 'اردو میں پڑھیں'}
-            </button>
-
-            {isLoading && (
-                <span className={styles.loadingIndicator}>
-                    ⏳ Processing...
-                </span>
-            )}
+                <button
+                    onClick={handleTranslate}
+                    disabled={isLoading}
+                    className={`${styles.button} ${styles.urduButton} ${isUrdu ? styles.active : ''}`}
+                >
+                    {isLoading && isUrdu ? (
+                        <span className={styles.loading}>⏳</span>
+                    ) : (
+                        <>
+                            <span className={styles.icon}>🌐</span>
+                            {isUrdu ? 'English' : 'اردو'}
+                        </>
+                    )}
+                </button>
+            </div>
 
             {error && (
-                <span style={{ color: '#e74c3c', fontSize: '0.8rem', marginLeft: '0.5rem' }}>
+                <div className={styles.error}>
                     ⚠️ {error}
-                </span>
+                </div>
+            )}
+
+            {!isBackendAvailable() && (
+                <div className={styles.demoNote}>
+                    📌 Demo mode active - for full features, run backend locally
+                </div>
             )}
         </div>
     );

@@ -1,4 +1,8 @@
-fix: Reset auth modal state when opened
+feat: Switch to Gemini API and add Vercel deployment
 
-Modal now resets to signin page when opened after logout instead of
-staying on the questions page. All form fields also reset.
+- Replaced OpenAI with Google Gemini API (FREE tier available)
+- Updated translation_service.py and personalization_service.py
+- Added vercel.json for full-stack deployment
+- Updated config.py with gemini_api_key and broader CORS
+- Updated ChapterActions for smart API URL detection
+- Frontend works on Vercel, localhost, and GitHub Pages (demo mode)

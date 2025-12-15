@@ -1,9 +1,9 @@
 """
 Translation Service - Handles Urdu translation for chapter content.
-Uses OpenAI for high-quality translations that preserve technical accuracy.
+Uses Google Gemini API for high-quality translations (FREE tier available).
 """
 
-from openai import OpenAI
+import google.generativeai as genai
 from config import get_settings
 import logging
 
@@ -14,21 +14,24 @@ logger = logging.getLogger(__name__)
 class TranslationService:
     def __init__(self):
         settings = get_settings()
-        self.api_key = settings.openai_api_key
-        logger.info(f"OpenAI API key configured: {'Yes' if self.api_key else 'No'}")
-        logger.info(f"API key prefix: {self.api_key[:10]}..." if self.api_key else "No key")
-        self.openai = OpenAI(api_key=self.api_key)
-        self.model = "gpt-4o-mini"
+        self.api_key = settings.gemini_api_key
+        logger.info(f"Gemini API key configured: {'Yes' if self.api_key else 'No'}")
+        
+        if self.api_key:
+            genai.configure(api_key=self.api_key)
+            self.model = genai.GenerativeModel('gemini-1.5-flash')
+        else:
+            self.model = None
     
     def translate_to_urdu(self, content: str, preserve_code: bool = True) -> str:
         """
         Translate content to Urdu while preserving code blocks and technical terms.
         """
         
-        if not self.api_key:
-            raise ValueError("OpenAI API key not configured in .env file")
+        if not self.model:
+            raise ValueError("Gemini API key not configured in .env file")
         
-        system_prompt = """You are an expert translator specializing in technical and educational content.
+        prompt = f"""You are an expert translator specializing in technical and educational content.
 Translate the following text from English to Urdu.
 
 Rules:
@@ -38,21 +41,15 @@ Rules:
 4. Use proper Urdu script (right-to-left)
 5. Maintain markdown formatting
 6. Keep any mermaid diagrams in English
-7. For mathematical equations, keep the math but translate surrounding text"""
+7. For mathematical equations, keep the math but translate surrounding text
+
+Text to translate:
+{content}"""
 
         try:
             logger.info(f"Translating content of length: {len(content)}")
-            response = self.openai.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": content}
-                ],
-                max_tokens=4000,
-                temperature=0.3
-            )
-            
-            translated = response.choices[0].message.content
+            response = self.model.generate_content(prompt)
+            translated = response.text
             logger.info(f"Translation successful, output length: {len(translated)}")
             return translated
             
