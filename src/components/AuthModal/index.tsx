@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './AuthModal.module.css';
 
 /*
@@ -31,6 +31,22 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
     const [hardwareBackground, setHardwareBackground] = useState('');
     const [programmingLanguages, setProgrammingLanguages] = useState<string[]>([]);
     const [interests, setInterests] = useState<string[]>([]);
+
+    // Reset modal state when opened
+    useEffect(() => {
+        if (isOpen) {
+            setMode('signin');
+            setError(null);
+            setEmail('');
+            setPassword('');
+            setName('');
+            setExperienceLevel('beginner');
+            setSoftwareBackground('');
+            setHardwareBackground('');
+            setProgrammingLanguages([]);
+            setInterests([]);
+        }
+    }, [isOpen]);
 
     if (!isOpen) return null;
 

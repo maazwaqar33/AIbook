@@ -1,5 +1,4 @@
-ci: Add GitHub Actions deployment workflow
+fix: Reset auth modal state when opened
 
-- Added .github/workflows/deploy.yml for automatic deployment
-- Updated docusaurus.config.ts with correct baseUrl and projectName
-- Deployment will trigger automatically on push to main
+Modal now resets to signin page when opened after logout instead of
+staying on the questions page. All form fields also reset.
