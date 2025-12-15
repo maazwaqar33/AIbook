@@ -1,8 +1,9 @@
-feat: Switch to Gemini API and add Vercel deployment
+feat: Fix RAG chatbot and improve UI styling
 
-- Replaced OpenAI with Google Gemini API (FREE tier available)
-- Updated translation_service.py and personalization_service.py
-- Added vercel.json for full-stack deployment
-- Updated config.py with gemini_api_key and broader CORS
-- Updated ChapterActions for smart API URL detection
-- Frontend works on Vercel, localhost, and GitHub Pages (demo mode)
+- Updated RAG service to use Gemini API instead of OpenAI
+- Added sample context for demo without Qdrant
+- Updated chat endpoints for new RAG format
+- Improved translation notice with sleek gradient background
+- Improved personalization notice with modern styling
+- Added smooth slide-in animations
+- Added Noto Nastaliq Urdu font for proper Urdu rendering

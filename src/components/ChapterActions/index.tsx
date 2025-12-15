@@ -152,15 +152,42 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
                     personalizedContent = getDemoPersonalizedContent(contentEl.textContent?.slice(0, 500) || '');
                 }
 
-                // Create and insert notice
+                // Create and insert notice with sleek styling
                 const notice = document.createElement('div');
                 notice.id = 'personalize-notice';
-                notice.className = 'alert alert--info margin-bottom--md';
+                notice.style.cssText = `
+                  background: linear-gradient(135deg, #1a2e1a 0%, #162e16 50%, #0f4620 100%);
+                  border: 1px solid rgba(0, 255, 136, 0.3);
+                  border-radius: 16px;
+                  padding: 24px;
+                  margin-bottom: 24px;
+                  color: #e0e0e0;
+                  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+                  animation: slideIn 0.5s ease-out;
+                `;
+
+                // Add animation keyframes if not already added
+                if (!document.getElementById('personalize-animation-styles')) {
+                    const styleEl = document.createElement('style');
+                    styleEl.id = 'personalize-animation-styles';
+                    styleEl.textContent = `
+                    @keyframes slideIn {
+                      from { opacity: 0; transform: translateY(-20px); }
+                      to { opacity: 1; transform: translateY(0); }
+                    }
+                  `;
+                    document.head.appendChild(styleEl);
+                }
+
                 notice.innerHTML = `
-          <strong>✨ Personalized for ${user?.name || 'you'} (${user?.experienceLevel || 'beginner'} level)</strong>
-          <p style="margin-top: 8px; white-space: pre-wrap;">${personalizedContent}</p>
-          ${!isBackendAvailable() ? '<small style="color: #666;">📌 Demo mode - run backend locally for full personalization</small>' : ''}
-        `;
+                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(0, 255, 136, 0.2);">
+                    <span style="font-size: 1.5rem;">✨</span>
+                    <span style="font-size: 1.25rem; font-weight: 600; color: #00ff88;">Personalized for ${user?.name || 'you'}</span>
+                    <span style="background: rgba(0, 255, 136, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: #00ff88;">${user?.experienceLevel || 'beginner'}</span>
+                  </div>
+                  <div style="line-height: 1.8; font-size: 1rem; color: #f0f0f0; white-space: pre-wrap;">${personalizedContent}</div>
+                  ${!isBackendAvailable() ? '<div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; color: #888;">📌 Demo mode - deploy to Vercel or run backend locally for full personalization</div>' : ''}
+                `;
 
                 contentEl.insertBefore(notice, contentEl.firstChild);
                 setIsPersonalized(true);
@@ -223,18 +250,47 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
                     translatedContent = getDemoUrduContent();
                 }
 
-                // Create and insert Urdu notice
+                // Create and insert Urdu notice with sleek styling
                 const notice = document.createElement('div');
                 notice.id = 'urdu-notice';
-                notice.className = 'alert alert--success margin-bottom--md';
                 notice.dir = 'rtl';
-                notice.style.textAlign = 'right';
-                notice.style.fontFamily = 'Noto Nastaliq Urdu, serif';
+                notice.style.cssText = `
+                  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+                  border: 1px solid rgba(0, 212, 255, 0.3);
+                  border-radius: 16px;
+                  padding: 24px;
+                  margin-bottom: 24px;
+                  text-align: right;
+                  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+                  color: #e0e0e0;
+                  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+                  animation: slideIn 0.5s ease-out;
+                  position: relative;
+                  overflow: hidden;
+                `;
+
+                // Add animation keyframes
+                if (!document.getElementById('urdu-animation-styles')) {
+                    const styleEl = document.createElement('style');
+                    styleEl.id = 'urdu-animation-styles';
+                    styleEl.textContent = `
+                    @keyframes slideIn {
+                      from { opacity: 0; transform: translateY(-20px); }
+                      to { opacity: 1; transform: translateY(0); }
+                    }
+                    @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap');
+                  `;
+                    document.head.appendChild(styleEl);
+                }
+
                 notice.innerHTML = `
-          <strong>🌐 اردو ترجمہ</strong>
-          <div style="margin-top: 8px; white-space: pre-wrap; line-height: 2;">${translatedContent}</div>
-          ${!isBackendAvailable() ? '<small style="color: #666; direction: ltr;">📌 Demo mode - run backend locally for full translation</small>' : ''}
-        `;
+                  <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(0, 212, 255, 0.2);">
+                    <span style="font-size: 1.25rem; font-weight: 600; color: #00d4ff;">اردو ترجمہ</span>
+                    <span style="font-size: 1.5rem;">🌐</span>
+                  </div>
+                  <div style="line-height: 2.2; font-size: 1.1rem; color: #f0f0f0;">${translatedContent}</div>
+                  ${!isBackendAvailable() ? '<div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; color: #888; direction: ltr; text-align: left;">📌 Demo mode - deploy to Vercel or run backend locally for full translation</div>' : ''}
+                `;
 
                 contentEl.insertBefore(notice, contentEl.firstChild);
                 document.body.classList.add('rtl-mode');

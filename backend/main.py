@@ -96,20 +96,15 @@ async def chat(request: ChatRequest):
     try:
         rag_service = get_rag_service()
         
-        # Search for relevant context
-        search_results = rag_service.search(request.message, limit=5)
-        context = "\n\n".join([r["text"] for r in search_results])
-        
-        # Generate response
-        response = rag_service.generate_response(
+        # Generate response (now returns tuple)
+        response_text, sources = rag_service.generate_response(
             query=request.message,
-            context=context,
             selected_text=request.selected_text
         )
         
         return ChatResponse(
-            response=response,
-            sources=search_results[:3]  # Return top 3 sources
+            response=response_text,
+            sources=sources[:3]  # Return top 3 sources
         )
         
     except Exception as e:
@@ -128,16 +123,16 @@ async def chat_about_selection(request: ChatRequest):
     try:
         rag_service = get_rag_service()
         
-        # Use selected text as primary context
-        response = rag_service.generate_response(
+        # Use selected text as primary context (returns tuple now)
+        response_text, _ = rag_service.generate_response(
             query=request.message,
             context=request.selected_text,
             selected_text=request.selected_text
         )
         
         return ChatResponse(
-            response=response,
-            sources=[{"text": request.selected_text, "source": "selected", "score": 1.0}]
+            response=response_text,
+            sources=[{"text": request.selected_text[:200], "source": "selected", "score": 1.0}]
         )
         
     except Exception as e:

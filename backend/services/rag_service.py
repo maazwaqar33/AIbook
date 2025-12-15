@@ -1,167 +1,132 @@
 """
 RAG Service - The brain of my chatbot.
-Handles document embedding, retrieval, and generation.
+Now uses Google Gemini for chat (FREE tier) while keeping Qdrant for vector storage.
 """
 
 from typing import Optional
 import hashlib
-from openai import OpenAI
-from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
-import tiktoken
-
+import google.generativeai as genai
 from config import get_settings
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class RAGService:
     def __init__(self):
         settings = get_settings()
         
-        # Initialize OpenAI client
-        self.openai = OpenAI(api_key=settings.openai_api_key)
-        self.embedding_model = settings.openai_embedding_model
-        self.chat_model = settings.openai_chat_model
-        
-        # Initialize Qdrant client
-        if settings.qdrant_url and settings.qdrant_api_key:
-            self.qdrant = QdrantClient(
-                url=settings.qdrant_url,
-                api_key=settings.qdrant_api_key
-            )
+        # Initialize Gemini for chat
+        self.gemini_api_key = settings.gemini_api_key
+        if self.gemini_api_key:
+            genai.configure(api_key=self.gemini_api_key)
+            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            logger.info("Gemini API configured for RAG chat")
         else:
-            # Use in-memory for local development
-            self.qdrant = QdrantClient(":memory:")
+            self.model = None
+            logger.warning("Gemini API key not configured")
         
-        self.collection_name = settings.qdrant_collection_name
-        self.tokenizer = tiktoken.get_encoding("cl100k_base")
-        
-        # Ensure collection exists
-        self._ensure_collection()
+        # For now, we'll use a simple in-memory context store
+        # In production, you'd use Qdrant with OpenAI embeddings
+        self.context_store = []
+        self._load_sample_context()
     
-    def _ensure_collection(self):
-        """Create collection if it doesn't exist"""
-        try:
-            self.qdrant.get_collection(self.collection_name)
-        except Exception:
-            self.qdrant.create_collection(
-                collection_name=self.collection_name,
-                vectors_config=VectorParams(
-                    size=1536,  # text-embedding-3-small dimension
-                    distance=Distance.COSINE
-                )
-            )
-    
-    def _generate_id(self, text: str) -> str:
-        """Generate a unique ID for a text chunk"""
-        return hashlib.md5(text.encode()).hexdigest()
-    
-    def get_embedding(self, text: str) -> list[float]:
-        """Get embedding vector for text"""
-        response = self.openai.embeddings.create(
-            model=self.embedding_model,
-            input=text
-        )
-        return response.data[0].embedding
-    
-    def chunk_text(self, text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
-        """Split text into overlapping chunks"""
-        tokens = self.tokenizer.encode(text)
-        chunks = []
-        
-        for i in range(0, len(tokens), chunk_size - overlap):
-            chunk_tokens = tokens[i:i + chunk_size]
-            chunk_text = self.tokenizer.decode(chunk_tokens)
-            chunks.append(chunk_text)
-        
-        return chunks
-    
-    def ingest_document(self, content: str, metadata: dict) -> int:
-        """Ingest a document into the vector store"""
-        chunks = self.chunk_text(content)
-        points = []
-        
-        for i, chunk in enumerate(chunks):
-            embedding = self.get_embedding(chunk)
-            point_id = self._generate_id(f"{metadata.get('source', 'unknown')}_{i}")
-            
-            points.append(PointStruct(
-                id=point_id,
-                vector=embedding,
-                payload={
-                    "text": chunk,
-                    "chunk_index": i,
-                    **metadata
-                }
-            ))
-        
-        self.qdrant.upsert(
-            collection_name=self.collection_name,
-            points=points
-        )
-        
-        return len(points)
-    
-    def search(self, query: str, limit: int = 5) -> list[dict]:
-        """Search for relevant chunks"""
-        query_embedding = self.get_embedding(query)
-        
-        results = self.qdrant.search(
-            collection_name=self.collection_name,
-            query_vector=query_embedding,
-            limit=limit
-        )
-        
-        return [
+    def _load_sample_context(self):
+        """Load sample context about the textbook for demo purposes"""
+        self.context_store = [
             {
-                "text": hit.payload.get("text", ""),
-                "source": hit.payload.get("source", ""),
-                "score": hit.score
+                "text": "Physical AI combines artificial intelligence with physical systems like robots. It enables machines to perceive, understand, and interact with the real world.",
+                "source": "Chapter 1 - Introduction"
+            },
+            {
+                "text": "ROS2 (Robot Operating System 2) is the industry standard middleware for robotics. It provides tools for building robot applications including message passing, hardware abstraction, and package management.",
+                "source": "Chapter 2 - Foundations"
+            },
+            {
+                "text": "Humanoid robots are designed to mimic human form and movement. Examples include Boston Dynamics' Atlas, Tesla's Optimus, and Figure's Figure 01.",
+                "source": "Chapter 7 - Humanoids"
+            },
+            {
+                "text": "LIDAR (Light Detection and Ranging) uses laser pulses to measure distances and create 3D maps of the environment. It's essential for autonomous navigation.",
+                "source": "Chapter 3 - Hardware"
+            },
+            {
+                "text": "Computer vision enables robots to understand visual information from cameras. Deep learning models like YOLO and ResNet are commonly used for object detection.",
+                "source": "Chapter 6 - Perception"
+            },
+            {
+                "text": "Motion planning algorithms like RRT (Rapidly-exploring Random Trees) and A* help robots find collision-free paths through their environment.",
+                "source": "Chapter 4 - Motion"
+            },
+            {
+                "text": "Reinforcement learning allows robots to learn behaviors through trial and error. The robot receives rewards for good actions and penalties for bad ones.",
+                "source": "Chapter 5 - AI Algorithms"
             }
-            for hit in results
         ]
+    
+    def search(self, query: str, limit: int = 3) -> list[dict]:
+        """Simple keyword-based search for demo. In production, use embeddings."""
+        query_lower = query.lower()
+        results = []
+        
+        for item in self.context_store:
+            text_lower = item["text"].lower()
+            # Simple relevance scoring
+            score = sum(1 for word in query_lower.split() if word in text_lower)
+            if score > 0:
+                results.append({
+                    "text": item["text"],
+                    "source": item["source"],
+                    "score": score
+                })
+        
+        # Sort by score and return top results
+        results.sort(key=lambda x: x["score"], reverse=True)
+        return results[:limit]
     
     def generate_response(
         self, 
         query: str, 
         context: Optional[str] = None,
         selected_text: Optional[str] = None
-    ) -> str:
-        """Generate a response using RAG"""
+    ) -> tuple[str, list[dict]]:
+        """Generate a response using Gemini with RAG context"""
         
-        # Search for relevant context if not provided
+        if not self.model:
+            return "Please configure the Gemini API key in backend/.env", []
+        
+        # Search for relevant context
+        search_results = self.search(query)
+        
         if context is None:
-            search_results = self.search(query, limit=5)
             context = "\n\n".join([r["text"] for r in search_results])
         
-        # Build my prompt
-        system_prompt = """You are a helpful AI tutor for a Physical AI & Humanoid Robotics textbook. 
-Your role is to answer questions based on the textbook content provided as context.
-Be clear, educational, and accurate. If the answer isn't in the context, say so.
-Use examples and code snippets when helpful."""
+        # Build prompt
+        prompt = f"""You are a helpful AI tutor for a Physical AI & Humanoid Robotics textbook.
+Answer the user's question based on the textbook content provided as context.
+Be clear, educational, and accurate. Use examples when helpful.
 
-        user_message = f"""Context from the textbook:
+Context from the textbook:
 {context}
 
 """
         if selected_text:
-            user_message += f"""The user has selected this text:
+            prompt += f"""The user has selected this text:
 "{selected_text}"
 
 """
         
-        user_message += f"Question: {query}"
-        
-        response = self.openai.chat.completions.create(
-            model=self.chat_model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_message}
-            ],
-            max_tokens=1000,
-            temperature=0.7
-        )
-        
-        return response.choices[0].message.content
+        prompt += f"""Question: {query}
+
+Please provide a helpful, educational response."""
+
+        try:
+            response = self.model.generate_content(prompt)
+            return response.text, search_results
+        except Exception as e:
+            logger.error(f"Gemini error: {e}")
+            return f"Error generating response: {str(e)}", []
 
 
 # Singleton instance
