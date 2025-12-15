@@ -151,7 +151,9 @@ export default function ChapterActions({ className }: ChapterActionsProps): Reac
                 });
 
                 if (!response.ok) {
-                    throw new Error('Backend not running. Start with: uvicorn main:app --reload');
+                    const errorData = await response.json().catch(() => ({}));
+                    const errorMsg = errorData.detail || `API Error: ${response.status}`;
+                    throw new Error(errorMsg);
                 }
 
                 const data = await response.json();

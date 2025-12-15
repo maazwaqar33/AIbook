@@ -3,11 +3,11 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 99999;
     backdrop-filter: blur(4px);
 }
 
@@ -21,6 +21,7 @@
     overflow-y: auto;
     position: relative;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 100000;
 }
 
 .closeButton {
@@ -64,6 +65,8 @@
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .input:focus {
@@ -79,6 +82,17 @@
     font-size: 1rem;
     background: white;
     cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    appearance: menulist;
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
+}
+
+.select option {
+    padding: 12px;
+    background: white;
+    color: #1f2937;
 }
 
 .select:focus {
@@ -159,10 +173,12 @@
 .optionGroup {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .optionButton {
     flex: 1;
+    min-width: 80px;
     padding: 10px 16px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
@@ -221,18 +237,45 @@
     color: #9ca3af;
 }
 
-[data-theme='dark'] .input,
+[data-theme='dark'] .input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
 [data-theme='dark'] .select {
     background: #374151;
     border-color: #4b5563;
     color: #f9fafb;
 }
 
-[data-theme='dark'] .optionButton,
+[data-theme='dark'] .select option {
+    background: #374151;
+    color: #f9fafb;
+}
+
+[data-theme='dark'] .optionButton {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
+[data-theme='dark'] .optionButton.selected {
+    background: #0094b3;
+    color: white;
+    border-color: #0094b3;
+}
+
 [data-theme='dark'] .chip {
     background: #374151;
     border-color: #4b5563;
     color: #f9fafb;
+}
+
+[data-theme='dark'] .chip.selected {
+    background: #0d5d6b;
+    color: #e0f7fa;
+    border-color: #0094b3;
 }
 
 [data-theme='dark'] .label {
@@ -245,4 +288,16 @@
 
 [data-theme='dark'] .closeButton:hover {
     color: #f9fafb;
+}
+
+[data-theme='dark'] .backButton {
+    color: #9ca3af;
+}
+
+[data-theme='dark'] .backButton:hover {
+    color: #f9fafb;
+}
+
+[data-theme='dark'] .switchMode {
+    color: #9ca3af;
 }

@@ -1,11 +1,12 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import ChatbotWidget from '../components/ChatbotWidget';
 import NavbarAuthButton from '../components/NavbarAuthButton';
 
 /*
   Swizzled Root component - adds global components to every page:
   1. ChatbotWidget - RAG-powered chatbot in bottom right
-  2. NavbarAuthButton - Auth button in navbar (injected via portal)
+  2. NavbarAuthButton - Auth button in navbar (via React Portal)
 */
 
 interface RootProps {
@@ -13,33 +14,41 @@ interface RootProps {
 }
 
 export default function Root({ children }: RootProps): React.JSX.Element {
-    // Inject auth button into navbar on mount
-    React.useEffect(() => {
-        const injectAuthButton = () => {
+    const [navbarContainer, setNavbarContainer] = useState<HTMLElement | null>(null);
+
+    // Find navbar container for portal
+    useEffect(() => {
+        const findNavbar = () => {
             const navbar = document.querySelector('.navbar__items--right');
             if (navbar && !document.getElementById('navbar-auth-container')) {
                 const container = document.createElement('div');
                 container.id = 'navbar-auth-container';
                 container.style.marginLeft = '8px';
+                container.style.display = 'flex';
+                container.style.alignItems = 'center';
                 navbar.appendChild(container);
-
-                // Render the auth button
-                const root = require('react-dom/client').createRoot(container);
-                root.render(<NavbarAuthButton />);
+                setNavbarContainer(container);
             }
         };
 
-        // Try immediately and with delay for SPA navigation
-        injectAuthButton();
-        const timer = setTimeout(injectAuthButton, 100);
+        // Try multiple times for SPA navigation
+        findNavbar();
+        const timer1 = setTimeout(findNavbar, 100);
+        const timer2 = setTimeout(findNavbar, 500);
+        const timer3 = setTimeout(findNavbar, 1000);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+            clearTimeout(timer3);
+        };
     }, []);
 
     return (
         <>
             {children}
             <ChatbotWidget apiUrl="http://localhost:8000" />
+            {navbarContainer && createPortal(<NavbarAuthButton />, navbarContainer)}
         </>
     );
 }
