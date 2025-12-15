@@ -21,7 +21,7 @@ class RAGService:
         self.gemini_api_key = settings.gemini_api_key
         if self.gemini_api_key:
             genai.configure(api_key=self.gemini_api_key)
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            self.model = genai.GenerativeModel('gemini-pro')
             logger.info("Gemini API configured for RAG chat")
         else:
             self.model = None
