@@ -1,0 +1,28 @@
+# RAG Chatbot Backend Dependencies
+# I'm using these to power the AI-powered chatbot for the textbook
+
+# Web framework
+fastapi>=0.109.0
+uvicorn>=0.27.0
+
+# OpenAI for embeddings and chat
+openai>=1.0.0
+
+# Vector database - Qdrant for similarity search
+qdrant-client>=1.7.0
+
+# Database - Neon Postgres for user data
+psycopg2-binary>=2.9.9
+sqlalchemy>=2.0.0
+asyncpg>=0.29.0
+
+# Environment and utilities
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# CORS for frontend integration
+# (included in fastapi)
+
+# Text processing
+tiktoken>=0.5.0

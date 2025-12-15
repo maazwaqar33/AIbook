@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Production build
+build/
+.docusaurus/
+
+# Cache
+.cache/
+*.log
+npm-debug.log*
+
+# Environment files (contain secrets!)
+.env
+.env.local
+.env.*.local
+
+# Python
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/

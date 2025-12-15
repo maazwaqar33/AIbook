@@ -1,0 +1,89 @@
+/* Navbar Auth Button Styles */
+
+.authButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #0094b3;
+    background: #ffffff;
+    color: #0094b3;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.authButton:hover {
+    background: #f0faff;
+    transform: translateY(-1px);
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    background: rgba(0, 148, 179, 0.08);
+}
+
+.userName {
+    font-weight: 500;
+    color: #0094b3;
+    font-size: 0.9rem;
+}
+
+.userLevel {
+    font-size: 0.8rem;
+    color: #6b7280;
+    text-transform: capitalize;
+}
+
+.logoutButton {
+    padding: 4px 10px;
+    border: 1px solid #dc2626;
+    border-radius: 6px;
+    background: transparent;
+    color: #dc2626;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logoutButton:hover {
+    background: #fef2f2;
+}
+
+/* Dark mode */
+[data-theme='dark'] .authButton {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+}
+
+[data-theme='dark'] .authButton:hover {
+    background: rgba(0, 212, 255, 0.2);
+}
+
+[data-theme='dark'] .userInfo {
+    background: rgba(0, 212, 255, 0.1);
+}
+
+[data-theme='dark'] .userName {
+    color: #00d4ff;
+}
+
+[data-theme='dark'] .userLevel {
+    color: #9ca3af;
+}
+
+[data-theme='dark'] .logoutButton {
+    border-color: #f87171;
+    color: #f87171;
+}
+
+[data-theme='dark'] .logoutButton:hover {
+    background: rgba(239, 68, 68, 0.1);
+}

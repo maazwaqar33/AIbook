@@ -1,0 +1,83 @@
+/* Chapter actions buttons styling */
+
+.chapterActions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.actionButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid #0094b3;
+    background: #ffffff;
+    color: #0094b3;
+}
+
+.actionButton:hover:not(:disabled) {
+    background: #f0faff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 148, 179, 0.2);
+}
+
+.actionButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.actionButton.active {
+    background: #0094b3;
+    color: #ffffff;
+    border-color: #0094b3;
+}
+
+.icon {
+    font-size: 1rem;
+}
+
+.loadingIndicator {
+    font-size: 0.875rem;
+    color: #0094b3;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .actionButton {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+}
+
+[data-theme='dark'] .actionButton:hover:not(:disabled) {
+    background: rgba(0, 212, 255, 0.2);
+}
+
+[data-theme='dark'] .actionButton.active {
+    background: #00d4ff;
+    color: #0a0f1a;
+}
+
+[data-theme='dark'] .loadingIndicator {
+    color: #00d4ff;
+}
