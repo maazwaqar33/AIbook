@@ -1,9 +1,5 @@
-fix: Auth modal improvements and error handling
+ci: Add GitHub Actions deployment workflow
 
-- Fixed AuthModal CSS for dark mode dropdown options
-- Increased modal z-index for proper stacking
-- Fixed select option colors and styling
-- Added proper error handling in ChapterActions to show actual API errors
-- NavbarAuthButton now renders modal via portal for proper display
-
-Tested: Signup flow works end-to-end with user info displayed in navbar
+- Added .github/workflows/deploy.yml for automatic deployment
+- Updated docusaurus.config.ts with correct baseUrl and projectName
+- Deployment will trigger automatically on push to main

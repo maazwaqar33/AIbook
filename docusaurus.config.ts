@@ -11,11 +11,11 @@ const config = {
 
   // My GitHub Pages URL will be here
   url: 'https://maazwaqar33.github.io',
-  baseUrl: '/physical-ai-textbook/',
+  baseUrl: '/AIbook/',
 
   // GitHub pages deployment config
   organizationName: 'maazwaqar33',
-  projectName: 'physical-ai-textbook',
+  projectName: 'AIbook',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
