@@ -11,11 +11,9 @@
 */
 
 // =============================================
-// IMPORTANT: UPDATE THIS AFTER HUGGING FACE DEPLOYMENT
+// HUGGING FACE BACKEND URL (LIVE!)
 // =============================================
-// Your Hugging Face Space URL will be like:
-// https://YOUR-USERNAME-physical-ai-api.hf.space
-const HF_BACKEND_URL = 'https://maazwaqar33-physical-ai-api.hf.space';
+const HF_BACKEND_URL = 'https://maazahmedsiddiqui-physical-ai-api.hf.space';
 
 /**
  * Get the API URL based on environment
