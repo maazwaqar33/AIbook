@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ChapterActions.module.css';
+import { getApiUrl, isBackendAvailable } from '../../config/api';
 
 /*
   This component provides the Personalize and Translate buttons.
@@ -22,24 +23,7 @@ interface ChapterActionsProps {
     className?: string;
 }
 
-// Check if we're on localhost (backend available) or deployed (demo mode)
-const getApiUrl = (): string => {
-    if (typeof window === 'undefined') return '';
-    const hostname = window.location.hostname;
-    // Vercel deployment - use relative API path
-    if (hostname.includes('vercel.app')) return '';
-    // Local development
-    if (hostname === 'localhost' || hostname === '127.0.0.1') return 'http://localhost:8000';
-    // GitHub Pages - demo mode
-    return '';
-};
-
-const isBackendAvailable = (): boolean => {
-    if (typeof window === 'undefined') return false;
-    const hostname = window.location.hostname;
-    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('vercel.app');
-};
-
+// API URL from centralized config (points to Hugging Face in production)
 const API_URL = getApiUrl();
 
 export default function ChapterActions({ className }: ChapterActionsProps): React.JSX.Element {

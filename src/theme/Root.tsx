@@ -2,6 +2,7 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import ChatbotWidget from '../components/ChatbotWidget';
 import NavbarAuthButton from '../components/NavbarAuthButton';
+import { getApiUrl } from '../config/api';
 
 /*
   Swizzled Root component - adds global components to every page:
@@ -15,6 +16,12 @@ interface RootProps {
 
 export default function Root({ children }: RootProps): React.JSX.Element {
     const [navbarContainer, setNavbarContainer] = useState<HTMLElement | null>(null);
+    const [apiUrl, setApiUrl] = useState('http://localhost:8000');
+
+    // Get API URL on client side
+    useEffect(() => {
+        setApiUrl(getApiUrl());
+    }, []);
 
     // Find navbar container for portal
     useEffect(() => {
@@ -47,7 +54,7 @@ export default function Root({ children }: RootProps): React.JSX.Element {
     return (
         <>
             {children}
-            <ChatbotWidget apiUrl="http://localhost:8000" />
+            <ChatbotWidget apiUrl={apiUrl} />
             {navbarContainer && createPortal(<NavbarAuthButton />, navbarContainer)}
         </>
     );
