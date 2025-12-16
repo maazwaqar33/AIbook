@@ -19,7 +19,7 @@ class TranslationService:
         
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-pro')
+            self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
         else:
             self.model = None
     
@@ -54,8 +54,16 @@ Text to translate:
             return translated
             
         except Exception as e:
+            error_str = str(e).lower()
             logger.error(f"Translation error: {type(e).__name__}: {str(e)}")
-            raise
+            
+            # User-friendly error messages
+            if "429" in str(e) or "quota" in error_str or "rate" in error_str:
+                raise ValueError("⏳ Translation service is busy. Please wait a moment and try again.")
+            elif "api key" in error_str or "authentication" in error_str:
+                raise ValueError("🔑 API configuration issue. Please contact the administrator.")
+            else:
+                raise ValueError("😅 Translation temporarily unavailable. Please try again.")
     
     def translate_chunk(self, text: str) -> str:
         """Translate a smaller chunk of text"""

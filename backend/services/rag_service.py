@@ -21,7 +21,7 @@ class RAGService:
         self.gemini_api_key = settings.gemini_api_key
         if self.gemini_api_key:
             genai.configure(api_key=self.gemini_api_key)
-            self.model = genai.GenerativeModel('gemini-pro')
+            self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
             logger.info("Gemini API configured for RAG chat")
         else:
             self.model = None
@@ -125,8 +125,18 @@ Please provide a helpful, educational response."""
             response = self.model.generate_content(prompt)
             return response.text, search_results
         except Exception as e:
+            error_str = str(e).lower()
             logger.error(f"Gemini error: {e}")
-            return f"Error generating response: {str(e)}", []
+            
+            # User-friendly error messages
+            if "429" in str(e) or "quota" in error_str or "rate" in error_str:
+                return "⏳ I'm receiving too many requests right now. Please wait a moment and try again.", []
+            elif "api key" in error_str or "authentication" in error_str:
+                return "🔑 API configuration issue. Please contact the administrator.", []
+            elif "timeout" in error_str:
+                return "⏱️ The request timed out. Please try again.", []
+            else:
+                return "😅 Sorry, I encountered an issue. Please try again in a moment.", []
 
 
 # Singleton instance

@@ -28,7 +28,7 @@ class PersonalizationService:
         
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-pro')
+            self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
         else:
             self.model = None
     
@@ -66,8 +66,16 @@ Provide an adapted version that maintains accuracy while matching the user's lev
             return personalized
             
         except Exception as e:
+            error_str = str(e).lower()
             logger.error(f"Personalization error: {type(e).__name__}: {str(e)}")
-            raise
+            
+            # User-friendly error messages
+            if "429" in str(e) or "quota" in error_str or "rate" in error_str:
+                raise ValueError("⏳ Personalization service is busy. Please wait a moment and try again.")
+            elif "api key" in error_str or "authentication" in error_str:
+                raise ValueError("🔑 API configuration issue. Please contact the administrator.")
+            else:
+                raise ValueError("😅 Personalization temporarily unavailable. Please try again.")
 
 
 # Singleton
