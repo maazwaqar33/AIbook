@@ -1,1 +1,8 @@
-fix: Use gemini-pro model for API compatibility
+feat: Apply academic-grade UI theme with professional styling
+
+- Updated custom.css with proper color tokens (Light/Dark)
+- Added Inter and JetBrains Mono fonts for typography
+- Improved ChatbotWidget with clean minimal styling
+- Updated ChapterActions buttons with academic colors
+- Added proper WCAG-compliant contrast
+- Removed visual noise for better readability

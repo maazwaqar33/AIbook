@@ -1,7 +1,13 @@
-/* Chapter actions buttons styling */
+/* ChapterActions - Translate & Personalize Buttons (Academic Style) */
 
 .container {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+[data-theme='dark'] .container {
+    border-color: #1F2937;
 }
 
 .buttonGroup {
@@ -16,31 +22,31 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid #0094b3;
-    background: #ffffff;
-    color: #0094b3;
+    transition: all 0.15s ease;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    color: #475569;
 }
 
 .button:hover:not(:disabled) {
-    background: #f0faff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 148, 179, 0.2);
+    background: #DBEAFE;
+    color: #2563EB;
+    border-color: #2563EB;
 }
 
 .button:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
 .button.active {
-    background: #0094b3;
-    color: #ffffff;
-    border-color: #0094b3;
+    background: #2563EB;
+    color: #FFFFFF;
+    border-color: #2563EB;
 }
 
 .urduButton {
@@ -56,12 +62,12 @@
 }
 
 .error {
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 8px;
-    color: #ef4444;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    color: #DC2626;
     font-size: 0.875rem;
 }
 
@@ -69,8 +75,8 @@
     margin-top: 0.5rem;
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
-    color: #6b7280;
-    background: rgba(0, 0, 0, 0.05);
+    color: #64748B;
+    background: #F1F5F9;
     border-radius: 4px;
     display: inline-block;
 }
@@ -87,29 +93,32 @@
     }
 }
 
-/* Dark mode adjustments */
+/* Dark mode */
 [data-theme='dark'] .button {
-    background: rgba(0, 212, 255, 0.1);
-    border-color: rgba(0, 212, 255, 0.3);
-    color: #00d4ff;
+    background: #111827;
+    border-color: #1F2937;
+    color: #9CA3AF;
 }
 
 [data-theme='dark'] .button:hover:not(:disabled) {
-    background: rgba(0, 212, 255, 0.2);
+    background: #1E3A8A;
+    color: #60A5FA;
+    border-color: #60A5FA;
 }
 
 [data-theme='dark'] .button.active {
-    background: #00d4ff;
-    color: #0a0f1a;
+    background: #60A5FA;
+    color: #0B1220;
+    border-color: #60A5FA;
 }
 
 [data-theme='dark'] .error {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.3);
-    color: #f87171;
+    background: rgba(220, 38, 38, 0.1);
+    border-color: rgba(220, 38, 38, 0.3);
+    color: #F87171;
 }
 
 [data-theme='dark'] .demoNote {
     background: rgba(255, 255, 255, 0.05);
-    color: #9ca3af;
+    color: #6B7280;
 }
