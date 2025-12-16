@@ -9,9 +9,9 @@ const config = {
   tagline: 'Master the future of intelligent machines',
   favicon: 'img/favicon.ico',
 
-  // My GitHub Pages URL will be here
-  url: 'https://maazwaqar33.github.io',
-  baseUrl: '/AIbook/',
+  // Vercel deployment URL
+  url: 'https://aibook-physical-ai.vercel.app',
+  baseUrl: '/',
 
   // GitHub pages deployment config
   organizationName: 'maazwaqar33',
