@@ -1,11 +1,12 @@
-feat: Add graceful error handling and comprehensive documentation
+feat: Revamp landing page with professional academic design
 
-- Added user-friendly error messages to RAG, translation, personalization services
-- Errors now show helpful emoji messages instead of raw API errors
-- Created comprehensive improvementfile.md with:
-  - System architecture diagrams
-  - Feature flow explanations
-  - Video demo script
-  - Deployment instructions
-- Updated vercel.json for proper full-stack deployment
-- Changed model to gemini-2.0-flash-exp (working)
+- Redesigned hero section with clean typography
+- Added Key Capabilities section (4 cards)
+- Added How Learning Works section (3 steps)
+- Added subtle Technology Stack section
+- Added clean Call to Action
+- Removed gradients and heavy animations
+- Consistent 8/16/24px spacing scale
+- Single accent color (blue)
+- Responsive for mobile/tablet/desktop
+- Updated README with professional documentation

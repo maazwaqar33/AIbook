@@ -1,34 +1,293 @@
-/* Homepage specific styles */
+/* Landing Page - Clean, Professional, Academic */
 
-.heroBanner {
-    padding: 4rem 0;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+/* Container */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
 
-.buttons {
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+
+.hero {
+    padding: 80px 24px;
+    text-align: center;
+    background: var(--ifm-background-color);
+}
+
+.heroContent {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.heroTitle {
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: var(--ifm-heading-color);
+    margin: 0 0 8px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.heroSubtitle {
+    font-size: 1.25rem;
+    color: var(--ifm-color-primary);
+    font-weight: 500;
+    margin: 0 0 24px 0;
+}
+
+.heroDescription {
+    font-size: 1.1rem;
+    color: var(--ifm-color-secondary-darkest);
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+}
+
+.heroButtons {
     display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.primaryButton {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 28px;
+    background: var(--ifm-color-primary);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.primaryButton:hover {
+    background: var(--ifm-color-primary-dark);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.secondaryButton {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 28px;
+    background: transparent;
+    color: var(--ifm-color-primary);
+    font-weight: 600;
+    font-size: 1rem;
+    border: 1px solid var(--ifm-color-primary);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.secondaryButton:hover {
+    background: var(--ifm-color-primary-lightest);
+    color: var(--ifm-color-primary);
+    text-decoration: none;
+}
+
+/* ==========================================================================
+   CAPABILITIES SECTION
+   ========================================================================== */
+
+.capabilities {
+    padding: 64px 24px;
+    background: var(--ifm-background-surface-color);
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 0 0 40px 0;
+    color: var(--ifm-heading-color);
+}
+
+.capabilityGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.capabilityCard {
+    background: var(--ifm-background-color);
+    border: 1px solid var(--ifm-color-emphasis-200);
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: box-shadow 0.15s ease;
+}
+
+.capabilityCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.capabilityIcon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.capabilityTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--ifm-heading-color);
+}
+
+.capabilityDescription {
+    font-size: 0.9rem;
+    color: var(--ifm-color-secondary-darkest);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   LEARNING STEPS SECTION
+   ========================================================================== */
+
+.learningSteps {
+    padding: 64px 24px;
+    background: var(--ifm-background-color);
+}
+
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.stepCard {
+    text-align: center;
+    padding: 24px;
+}
+
+.stepNumber {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
+    width: 48px;
+    height: 48px;
+    background: var(--ifm-color-primary);
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 50%;
+    margin-bottom: 16px;
 }
 
-.features {
-    display: flex;
+.stepTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--ifm-heading-color);
+}
+
+.stepDescription {
+    font-size: 0.9rem;
+    color: var(--ifm-color-secondary-darkest);
+    margin: 0;
+}
+
+/* ==========================================================================
+   TECH STACK SECTION
+   ========================================================================== */
+
+.techStack {
+    padding: 32px 24px;
+    background: var(--ifm-background-surface-color);
+    text-align: center;
+}
+
+.techText {
+    font-size: 0.85rem;
+    color: var(--ifm-color-secondary-darkest);
+    margin: 0;
+}
+
+/* ==========================================================================
+   CALL TO ACTION
+   ========================================================================== */
+
+.cta {
+    padding: 64px 24px;
+    text-align: center;
+    background: var(--ifm-background-color);
+}
+
+.ctaButton {
+    display: inline-flex;
     align-items: center;
-    padding: 4rem 0;
-    width: 100%;
+    gap: 8px;
+    padding: 16px 32px;
+    background: var(--ifm-color-primary);
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.15s ease;
 }
 
-.ctaSection {
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 212, 255, 0.05) 100%);
-    padding: 2rem 0;
+.ctaButton:hover {
+    background: var(--ifm-color-primary-dark);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
-@media screen and (max-width: 996px) {
-    .heroBanner {
-        padding: 2rem;
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 900px) {
+    .capabilityGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stepsGrid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .heroTitle {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero {
+        padding: 48px 16px;
+    }
+
+    .capabilityGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .heroTitle {
+        font-size: 1.75rem;
+    }
+
+    .heroButtons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .primaryButton,
+    .secondaryButton {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
     }
 }

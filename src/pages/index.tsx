@@ -1,80 +1,123 @@
-import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import Heading from '@theme/Heading';
 import styles from './index.module.css';
 
-// I'm creating a feature list to showcase the main sections of my book
-const FeatureList = [
+// Key Capabilities - What makes this textbook different
+const Capabilities = [
     {
-        title: 'Foundations First',
-        emoji: '🧮',
-        description: 'Master the math, programming, and ROS2 skills that power modern robotics.',
+        icon: '📖',
+        title: 'Structured Textbook',
+        description: 'Canonical content written for Physical AI and Humanoid Robotics.',
     },
     {
-        title: 'Hardware Deep Dive',
-        emoji: '🔧',
-        description: 'Understand sensors, actuators, and microcontrollers from the ground up.',
+        icon: '🧠',
+        title: 'AI Assistant',
+        description: 'Answers questions strictly from the book content.',
     },
     {
-        title: 'AI-Powered Robots',
-        emoji: '🤖',
-        description: 'Learn ML, deep learning, and how LLMs are revolutionizing robotics.',
+        icon: '✨',
+        title: 'Personalized Learning',
+        description: 'Adapts explanations based on your background.',
     },
     {
-        title: 'Humanoid Mastery',
-        emoji: '🦿',
-        description: 'Build bipedal robots that walk, balance, and interact with humans.',
+        icon: '🌐',
+        title: 'Urdu Translation',
+        description: 'AI-generated Urdu with proper RTL layout.',
     },
 ];
 
-function HomepageHeader() {
-    const { siteConfig } = useDocusaurusContext();
+// Learning Steps
+const Steps = [
+    { number: '1', title: 'Read the Chapter', description: 'Study the structured content' },
+    { number: '2', title: 'Ask the Assistant', description: 'Get answers from the book' },
+    { number: '3', title: 'Personalize or Translate', description: 'Adapt to your needs' },
+];
+
+function Hero() {
     return (
-        <header className={clsx('hero hero--primary', styles.heroBanner)}>
-            <div className="container">
-                <Heading as="h1" className="hero__title">
-                    {siteConfig.title}
-                </Heading>
-                <p className="hero__subtitle">
-                    The complete guide to building intelligent machines that move, think, and interact.
+        <section className={styles.hero}>
+            <div className={styles.heroContent}>
+                <h1 className={styles.heroTitle}>
+                    Physical AI & Humanoid Robotics
+                </h1>
+                <p className={styles.heroSubtitle}>
+                    An AI-Native Textbook
                 </p>
-                <div className={styles.buttons}>
-                    <Link
-                        className="button button--primary button--lg"
-                        to="/docs/intro">
-                        Start Learning 🚀
+                <p className={styles.heroDescription}>
+                    Learn how intelligent agents, robotics, and human-AI collaboration
+                    shape the future of technology.
+                </p>
+                <div className={styles.heroButtons}>
+                    <Link className={styles.primaryButton} to="/docs/intro">
+                        Start Learning
+                    </Link>
+                    <Link className={styles.secondaryButton} to="/docs/intro">
+                        Open Assistant
                     </Link>
                 </div>
             </div>
-        </header>
+        </section>
     );
 }
 
-function Feature({ title, emoji, description }) {
+function CapabilitiesSection() {
     return (
-        <div className={clsx('col col--3')}>
-            <div className="card padding--lg margin--sm">
-                <div className="text--center" style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-                    {emoji}
-                </div>
-                <Heading as="h3" className="text--center">{title}</Heading>
-                <p className="text--center">{description}</p>
-            </div>
-        </div>
-    );
-}
-
-function HomepageFeatures() {
-    return (
-        <section className={styles.features}>
-            <div className="container">
-                <div className="row">
-                    {FeatureList.map((props, idx) => (
-                        <Feature key={idx} {...props} />
+        <section className={styles.capabilities}>
+            <div className={styles.container}>
+                <h2 className={styles.sectionTitle}>Key Capabilities</h2>
+                <div className={styles.capabilityGrid}>
+                    {Capabilities.map((cap, idx) => (
+                        <div key={idx} className={styles.capabilityCard}>
+                            <span className={styles.capabilityIcon}>{cap.icon}</span>
+                            <h3 className={styles.capabilityTitle}>{cap.title}</h3>
+                            <p className={styles.capabilityDescription}>{cap.description}</p>
+                        </div>
                     ))}
                 </div>
+            </div>
+        </section>
+    );
+}
+
+function LearningSteps() {
+    return (
+        <section className={styles.learningSteps}>
+            <div className={styles.container}>
+                <h2 className={styles.sectionTitle}>How Learning Works</h2>
+                <div className={styles.stepsGrid}>
+                    {Steps.map((step, idx) => (
+                        <div key={idx} className={styles.stepCard}>
+                            <span className={styles.stepNumber}>{step.number}</span>
+                            <h3 className={styles.stepTitle}>{step.title}</h3>
+                            <p className={styles.stepDescription}>{step.description}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+function TechStack() {
+    return (
+        <section className={styles.techStack}>
+            <div className={styles.container}>
+                <p className={styles.techText}>
+                    Built with Docusaurus, FastAPI, Gemini API, and Retrieval-Augmented Generation.
+                </p>
+            </div>
+        </section>
+    );
+}
+
+function CallToAction() {
+    return (
+        <section className={styles.cta}>
+            <div className={styles.container}>
+                <Link className={styles.ctaButton} to="/docs/intro">
+                    Start the Textbook
+                </Link>
             </div>
         </section>
     );
@@ -84,26 +127,14 @@ export default function Home() {
     const { siteConfig } = useDocusaurusContext();
     return (
         <Layout
-            title={`Welcome`}
-            description="A comprehensive textbook for Physical AI and Humanoid Robotics">
-            <HomepageHeader />
+            title="Physical AI Textbook"
+            description="An AI-native textbook for Physical AI and Humanoid Robotics">
             <main>
-                <HomepageFeatures />
-                <section className={styles.ctaSection}>
-                    <div className="container">
-                        <div className="text--center padding-vert--xl">
-                            <Heading as="h2">Ready to Build the Future?</Heading>
-                            <p className="hero__subtitle">
-                                This book takes you from zero to building your own humanoid robot.
-                            </p>
-                            <Link
-                                className="button button--primary button--lg"
-                                to="/docs/intro">
-                                Begin Chapter 1 →
-                            </Link>
-                        </div>
-                    </div>
-                </section>
+                <Hero />
+                <CapabilitiesSection />
+                <LearningSteps />
+                <TechStack />
+                <CallToAction />
             </main>
         </Layout>
     );
