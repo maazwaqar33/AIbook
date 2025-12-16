@@ -95,16 +95,6 @@ aibook/
 └── static/                  # Images and assets
 ```
 
-## 💯 Hackathon Points
-
-| Feature | Points | Status |
-|---------|--------|--------|
-| Core Book + RAG Chatbot | 100 | ✅ Complete |
-| Claude Code Subagents | +50 | ✅ Complete |
-| Better-Auth | +50 | 🚧 UI Ready |
-| Personalization | +50 | 🚧 UI Ready |
-| Urdu Translation | +50 | 🚧 UI Ready |
-
 ## 🔧 Technologies
 
 - **Frontend**: Docusaurus 3.7, React 18, TypeScript
