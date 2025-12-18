@@ -4,7 +4,7 @@ An AI-native textbook built with Docusaurus, featuring an integrated RAG chatbot
 
 ## 🌐 Live Demo
 
-- **Frontend (Vercel)**: https://aibook-physical-ai.vercel.app
+- **Frontend (Vercel)**: [https://aibook-physical-ai.vercel.app](https://a-ibook-delta.vercel.app/)
 - **Backend API (Hugging Face)**: https://maazahmedsiddiqui-physical-ai-api.hf.space
 - **API Health Check**: https://maazahmedsiddiqui-physical-ai-api.hf.space/health
 - **API Docs**: https://maazahmedsiddiqui-physical-ai-api.hf.space/docs
